@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reactive CRUD 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        #response {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .success {
+            color: #28a745;
+            border-left-color: #28a745;
+        }
+
+        .error {
+            color: #dc3545;
+            border-left-color: #dc3545;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .spinner {
+            display: none;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading .spinner {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Reactive CRUD 测试页面</h1>
+
+        <!-- Create User Form -->
+        <div class="card">
+            <h2>➕ 创建用户</h2>
+            <form id="createForm" class="grid">
+                <div class="form-group">
+                    <label for="createName">姓名:</label>
+                    <input type="text" id="createName" required placeholder="请输入姓名">
+                </div>
+                <div class="form-group">
+                    <label for="createEmail">邮箱:</label>
+                    <input type="email" id="createEmail" required placeholder="请输入邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="createAge">年龄:</label>
+                    <input type="number" id="createAge" required placeholder="请输入年龄">
+                </div>
+            </form>
+            <button onclick="createUser()">创建用户 <span class="spinner"></span></button>
+        </div>
+
+        <!-- Query Users -->
+        <div class="card">
+            <h2>🔍 查询用户</h2>
+            <div class="grid">
+                <div>
+                    <button onclick="getAllUsers()">查询所有用户 <span class="spinner"></span></button>
+                </div>
+                <div class="form-group">
+                    <label for="searchId">按ID查询:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="searchId" placeholder="请输入用户ID">
+                        <button onclick="getUserById()" style="flex-shrink: 0;">查询 <span class="spinner"></span></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="searchName">按姓名搜索:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="searchName" placeholder="请输入姓名">
+                        <button onclick="getUsersByName()" style="flex-shrink: 0;">搜索 <span class="spinner"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update User -->
+        <div class="card">
+            <h2>✏️ 更新用户</h2>
+            <form id="updateForm" class="grid">
+                <div class="form-group">
+                    <label for="updateId">用户ID:</label>
+                    <input type="number" id="updateId" required placeholder="请输入用户ID">
+                </div>
+                <div class="form-group">
+                    <label for="updateName">姓名:</label>
+                    <input type="text" id="updateName" required placeholder="请输入姓名">
+                </div>
+                <div class="form-group">
+                    <label for="updateEmail">邮箱:</label>
+                    <input type="email" id="updateEmail" required placeholder="请输入邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="updateAge">年龄:</label>
+                    <input type="number" id="updateAge" required placeholder="请输入年龄">
+                </div>
+            </form>
+            <button onclick="updateUser()" class="btn-secondary">更新用户 <span class="spinner"></span></button>
+        </div>
+
+        <!-- Delete User -->
+        <div class="card">
+            <h2>🗑️ 删除用户</h2>
+            <div class="form-group">
+                <label for="deleteId">用户ID:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="deleteId" placeholder="请输入用户ID">
+                    <button onclick="deleteUser()" class="btn-danger" style="flex-shrink: 0;">删除用户 <span class="spinner"></span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <h2>📊 响应结果</h2>
+            <div id="response">等待操作...</div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <h2>👥 用户列表</h2>
+            <div id="usersTable">
+                <p style="color: #999;">点击"查询所有用户"按钮加载数据</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/users';
+
+        function setLoading(button, isLoading) {
+            if (isLoading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        function showResponse(data, isError = false) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = JSON.stringify(data, null, 2);
+            responseDiv.className = isError ? 'error' : 'success';
+        }
+
+        async function createUser() {
+            const button = event.target;
+            setLoading(button, true);
+            
+            const name = document.getElementById('createName').value;
+            const email = document.getElementById('createEmail').value;
+            const age = document.getElementById('createAge').value;
+
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, age: parseInt(age) })
+                });
+
+                const data = await response.json();
+                showResponse(data, !response.ok);
+                
+                if (response.ok) {
+                    document.getElementById('createForm').reset();
+                    getAllUsers();
+                }
+            } catch (error) {
+                showResponse({ error: error.message }, true);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        async function getAllUsers() {
+            const button = event.target;
+            setLoading(button, true);
+            
+            try {
+                const response = await fetch(API_BASE);
+                const data = await response.json();
+                showResponse(data, !response.ok);
+                
+                if (response.ok) {
+                    displayUsersTable(data);
+                }
+            } catch (error) {
+                showResponse({ error: error.message }, true);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        async function getUserById() {
+            const button = event.target;
+            setLoading(button, true);
+            
+            const id = document.getElementById('searchId').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/${id}`);
+                const data = await response.json();
+                showResponse(data, !response.ok);
+            } catch (error) {
+                showResponse({ error: error.message }, true);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        async function getUsersByName() {
+            const button = event.target;
+            setLoading(button, true);
+            
+            const name = document.getElementById('searchName').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/search?name=${encodeURIComponent(name)}`);
+                const data = await response.json();
+                showResponse(data, !response.ok);
+                
+                if (response.ok) {
+                    displayUsersTable(data);
+                }
+            } catch (error) {
+                showResponse({ error: error.message }, true);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        async function updateUser() {
+            const button = event.target;
+            setLoading(button, true);
+            
+            const id = document.getElementById('updateId').value;
+            const name = document.getElementById('updateName').value;
+            const email = document.getElementById('updateEmail').value;
+            const age = document.getElementById('updateAge').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, age: parseInt(age) })
+                });
+
+                const data = await response.json();
+                showResponse(data, !response.ok);
+                
+                if (response.ok) {
+                    document.getElementById('updateForm').reset();
+                    getAllUsers();
+                }
+            } catch (error) {
+                showResponse({ error: error.message }, true);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        async function deleteUser() {
+            const button = event.target;
+            const id = document.getElementById('deleteId').value;
+            
+            if (!confirm(`确定要删除用户 ID: ${id} 吗?`)) {
+                return;
+            }
+            
+            setLoading(button, true);
+
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showResponse({ message: `用户 ${id} 已成功删除` }, false);
+                    document.getElementById('deleteId').value = '';
+                    getAllUsers();
+                } else {
+                    showResponse({ error: `删除失败 (${response.status})` }, true);
+                }
+            } catch (error) {
+                showResponse({ error: error.message }, true);
+            } finally {
+                setLoading(button, false);
+            }
+        }
+
+        function displayUsersTable(users) {
+            const tableDiv = document.getElementById('usersTable');
+            
+            if (!users || users.length === 0) {
+                tableDiv.innerHTML = '<p style="color: #999;">暂无数据</p>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>姓名</th>
+                            <th>邮箱</th>
+                            <th>年龄</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(user => {
+                html += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.age}</td>
+                        <td class="actions">
+                            <button onclick="editUser(${user.id}, '${user.name}', '${user.email}', ${user.age})">编辑</button>
+                            <button class="btn-danger" onclick="quickDelete(${user.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            tableDiv.innerHTML = html;
+        }
+
+        function editUser(id, name, email, age) {
+            document.getElementById('updateId').value = id;
+            document.getElementById('updateName').value = name;
+            document.getElementById('updateEmail').value = email;
+            document.getElementById('updateAge').value = age;
+            
+            // Scroll to update form
+            document.querySelector('.card:nth-child(4)').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function quickDelete(id) {
+            document.getElementById('deleteId').value = id;
+            deleteUser();
+        }
+
+        // Load all users on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                fetch(API_BASE)
+                    .then(response => response.json())
+                    .then(data => displayUsersTable(data))
+                    .catch(error => console.error('Error loading users:', error));
+            }, 500);
+        });
+    </script>
+</body>
+</html>
