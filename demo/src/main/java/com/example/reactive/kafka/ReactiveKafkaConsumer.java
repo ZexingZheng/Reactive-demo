@@ -53,10 +53,10 @@ public class ReactiveKafkaConsumer {
                             event.getUserId(),
                             event.getTimestamp());
 
-                    // 异步处理事件 (包括发送邮件)
+                    // Process event asynchronously (including sending email)
                     return processEvent(event)
                             .doOnSuccess(v -> {
-                                // 处理成功后手动提交 offset
+                                // Manually commit offset after successful processing
                                 record.receiverOffset().acknowledge();
                                 log.debug("Acknowledged offset for userId: {}", event.getUserId());
                             });
@@ -64,7 +64,7 @@ public class ReactiveKafkaConsumer {
                 .timeout(Duration.ofSeconds(30))
                 .onErrorResume(error -> {
                     log.error("Failed to process record, skipping...", error);
-                    // 即使失败也要 acknowledge,避免重复消费
+                    // Acknowledge even on failure to avoid infinite reprocessing
                     record.receiverOffset().acknowledge();
                     return Mono.empty();
                 });
@@ -86,8 +86,8 @@ public class ReactiveKafkaConsumer {
             }
             case "DELETE" -> {
                 log.info("Processing DELETE event for userId: {}", event.getUserId());
-                // DELETE 事件中没有 email 信息,这里需要从其他地方获取或跳过
-                // 为了演示,我们简单记录日志
+                // No email info in DELETE event, need to get from elsewhere or skip
+                // For demonstration, we simply log
                 log.info("Skipping email for DELETE event (no email available)");
                 yield Mono.empty();
             }

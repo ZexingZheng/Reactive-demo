@@ -11,8 +11,8 @@ import java.util.concurrent.Executors;
 public class EmailConfig {
 
     /**
-     * 为邮件发送创建专用的线程池调度器
-     * 因为 JavaMailSender 是阻塞的，需要在独立的线程池中执行
+     * Create dedicated thread pool scheduler for email sending
+     * Because JavaMailSender is blocking, it needs to be executed in a separate thread pool
      */
     @Bean(name = "emailScheduler")
     public Scheduler emailScheduler() {
