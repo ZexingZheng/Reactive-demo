@@ -5,6 +5,30 @@ spring:
     url: r2dbc:h2:mem:///testdb
     username: sa
     password:
+  
+  # MongoDB配置 (可选)
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/reactive_demo
+      # 或使用详细配置:
+      # host: localhost
+      # port: 27017
+      # database: reactive_demo
+      # username: admin
+      # password: password
+  
+  # Redis配置 (可选)
+  redis:
+    host: localhost
+    port: 6379
+    # password: 
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+  
   kafka:
     bootstrap-servers: localhost:9092
     topics:
@@ -33,6 +57,13 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+# 功能开关
+mongodb:
+  enabled: false  # 设置为 true 启用 MongoDB
+
+redis:
+  enabled: false  # 设置为 true 启用 Redis 缓存
+
 # 邮件功能开关 (测试时可以关闭)
 email:
   enabled: true
@@ -41,6 +72,30 @@ email:
 server:
   port: 9090
 
+# Actuator监控端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env,beans,mappings
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Swagger/OpenAPI配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  show-actuator: true
+
 logging:
   level:
     root: INFO
@@ -48,3 +103,5 @@ logging:
     io.r2dbc.h2: DEBUG
     reactor.kafka: DEBUG
     org.springframework.mail: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.cache: DEBUG
