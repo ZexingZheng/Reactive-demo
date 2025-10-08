@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: reactive-crud
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
+  kafka:
+    bootstrap-servers: localhost:9092
+    topics:
+      user-events: user-events
+    consumer:
+      group-id: reactive-user-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+    producer:
+      acks: all
+      retries: 3
+      compression-type: snappy
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zedlynx4@gmail.com
+    password: blux nkxn vhwm hlrd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+# 邮件功能开关 (测试时可以关闭)
+email:
+  enabled: true
+  from: zedlynx4@gmail.com
+
+server:
+  port: 9090
+
+logging:
+  level:
+    root: INFO
+    com.example.reactive: DEBUG
+    io.r2dbc.h2: DEBUG
+    reactor.kafka: DEBUG
+    org.springframework.mail: DEBUG
