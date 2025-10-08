@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: reactive-demo
+  
+  # R2DBC Configuration for reactive database access
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
+  
+  # Mail Configuration (optimized with connection pooling)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:your-email@gmail.com}
+    password: ${MAIL_PASSWORD:your-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          # Connection pooling settings for better performance
+          connectionpool:
+            enabled: true
+            size: 10
+            timeout: 5000
+          # Timeout settings to prevent hanging
+          timeout: 5000
+          writetimeout: 5000
+
+# Email service optimization settings
+email:
+  batch:
+    size: 10
+    window:
+      seconds: 5
+
+# Logging
+logging:
+  level:
+    com.reactive.demo: INFO
+    org.springframework.mail: DEBUG
