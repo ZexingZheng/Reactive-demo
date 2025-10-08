@@ -36,8 +36,8 @@ public class EmailService {
     }
 
     /**
-     * 异步发送邮件
-     * 将阻塞的 JavaMailSender 操作放到专用线程池中执行
+     * Send email asynchronously
+     * Execute blocking JavaMailSender operations in dedicated thread pool
      */
     public Mono<Void> sendEmail(EmailMessage emailMessage) {
         if (!emailEnabled) {
@@ -50,14 +50,14 @@ public class EmailService {
                     sendEmailSync(emailMessage);
                     return true;
                 })
-                .subscribeOn(emailScheduler) // 在专用线程池中执行
-                .timeout(Duration.ofSeconds(30)) // 30秒超时
+                .subscribeOn(emailScheduler) // Execute in dedicated thread pool
+                .timeout(Duration.ofSeconds(30)) // 30 seconds timeout
                 .doOnSuccess(result ->
                         log.info("Successfully sent email to: {}", emailMessage.getTo()))
                 .doOnError(error ->
                         log.error("Failed to send email to: {}", emailMessage.getTo(), error))
                 .onErrorResume(e -> {
-                    // 邮件发送失败不影响主流程
+                    // Email sending failure does not affect main process
                     log.warn("Email sending failed, continuing...", e);
                     return Mono.empty();
                 })
@@ -65,7 +65,7 @@ public class EmailService {
     }
 
     /**
-     * 同步发送邮件（在独立线程池中执行）
+     * Send email synchronously (executed in separate thread pool)
      */
     private void sendEmailSync(EmailMessage emailMessage) {
         try {

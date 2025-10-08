@@ -18,7 +18,7 @@ public class EmailMessage {
     public static EmailMessage createUserWelcomeEmail(String email, String name) {
         return EmailMessage.builder()
                 .to(email)
-                .subject("欢迎加入我们!")
+                .subject("Welcome to join us!")
                 .content(buildWelcomeContent(name))
                 .isHtml(true)
                 .build();
@@ -27,7 +27,7 @@ public class EmailMessage {
     public static EmailMessage createUserUpdateEmail(String email, String name) {
         return EmailMessage.builder()
                 .to(email)
-                .subject("您的信息已更新")
+                .subject("Your information has been updated")
                 .content(buildUpdateContent(name))
                 .isHtml(true)
                 .build();
@@ -36,7 +36,7 @@ public class EmailMessage {
     public static EmailMessage createUserDeleteEmail(String email) {
         return EmailMessage.builder()
                 .to(email)
-                .subject("账号已删除")
+                .subject("Account deleted")
                 .content(buildDeleteContent())
                 .isHtml(true)
                 .build();
@@ -47,16 +47,16 @@ public class EmailMessage {
                 <html>
                 <body style="font-family: Arial, sans-serif; padding: 20px;">
                     <div style="max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 30px;">
-                        <h2 style="color: #333;">欢迎, %s!</h2>
+                        <h2 style="color: #333;">Welcome, %s!</h2>
                         <p style="color: #666; line-height: 1.6;">
-                            感谢您注册我们的服务。您的账号已经成功创建。
+                            Thank you for registering our service. Your account has been successfully created.
                         </p>
                         <p style="color: #666; line-height: 1.6;">
-                            我们很高兴您能加入我们!
+                            We're glad you joined us!
                         </p>
                         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
                         <p style="color: #999; font-size: 12px;">
-                            此邮件由系统自动发送，请勿回复。
+                            This email is sent automatically by the system, please do not reply.
                         </p>
                     </div>
                 </body>
@@ -69,16 +69,16 @@ public class EmailMessage {
                 <html>
                 <body style="font-family: Arial, sans-serif; padding: 20px;">
                     <div style="max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 30px;">
-                        <h2 style="color: #333;">您好, %s!</h2>
+                        <h2 style="color: #333;">Hello, %s!</h2>
                         <p style="color: #666; line-height: 1.6;">
-                            您的账号信息已经成功更新。
+                            Your account information has been successfully updated.
                         </p>
                         <p style="color: #666; line-height: 1.6;">
-                            如果这不是您本人的操作，请立即联系我们。
+                            If this was not you, please contact us immediately.
                         </p>
                         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
                         <p style="color: #999; font-size: 12px;">
-                            此邮件由系统自动发送，请勿回复。
+                            This email is sent automatically by the system, please do not reply.
                         </p>
                     </div>
                 </body>
@@ -91,16 +91,16 @@ public class EmailMessage {
                 <html>
                 <body style="font-family: Arial, sans-serif; padding: 20px;">
                     <div style="max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 30px;">
-                        <h2 style="color: #333;">账号已删除</h2>
+                        <h2 style="color: #333;">Account deleted</h2>
                         <p style="color: #666; line-height: 1.6;">
-                            您的账号已经被删除。
+                            Your account has been deleted.
                         </p>
                         <p style="color: #666; line-height: 1.6;">
-                            感谢您曾经使用我们的服务!
+                            Thank you for using our service!
                         </p>
                         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
                         <p style="color: #999; font-size: 12px;">
-                            此邮件由系统自动发送，请勿回复。
+                            This email is sent automatically by the system, please do not reply.
                         </p>
                     </div>
                 </body>

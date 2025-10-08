@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "User R2DBC API", description = "用户管理 R2DBC 接口")
+@Tag(name = "User R2DBC API", description = "User management R2DBC interface")
 public class UserController {
 
     private final UserService userService;
@@ -22,39 +22,39 @@ public class UserController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "获取所有用户", description = "查询所有用户列表")
+    @Operation(summary = "Get all users", description = "Query all users list")
     public Flux<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "根据ID获取用户", description = "通过用户ID查询用户信息")
+    @Operation(summary = "Get user by ID", description = "Query user info by user ID")
     public Mono<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "按姓名搜索用户", description = "精确搜索用户姓名")
+    @Operation(summary = "Search users by name", description = "Exact search by user name")
     public Flux<User> getUsersByName(@RequestParam String name) {
         return userService.getUsersByName(name);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "创建用户", description = "创建新用户")
+    @Operation(summary = "Create user", description = "Create new user")
     public Mono<User> createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "更新用户", description = "更新用户信息")
+    @Operation(summary = "Update user", description = "Update user information")
     public Mono<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "删除用户", description = "删除指定用户")
+    @Operation(summary = "Delete user", description = "Delete specified user")
     public Mono<Void> deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id);
     }

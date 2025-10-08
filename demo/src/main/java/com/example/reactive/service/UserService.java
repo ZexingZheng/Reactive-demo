@@ -32,7 +32,7 @@ public class UserService {
     public Mono<User> createUser(User user) {
         return userRepository.save(user)
                 .flatMap(savedUser -> {
-                    // 异步发送 Kafka 消息,不阻塞主流程
+                    // Asynchronously send Kafka message, do not block the main process
                     UserEvent event = UserEvent.create(
                             savedUser.getId(),
                             savedUser.getName(),
@@ -41,7 +41,7 @@ public class UserService {
                     );
                     return kafkaProducer.sendUserEvent(event)
                             .doOnError(e -> log.error("Failed to send CREATE event to Kafka", e))
-                            .onErrorResume(e -> Mono.empty()) // 即使 Kafka 失败,也返回成功
+                            .onErrorResume(e -> Mono.empty()) // Return success even if Kafka fails
                             .thenReturn(savedUser);
                 });
     }
@@ -55,7 +55,7 @@ public class UserService {
                     return userRepository.save(existingUser);
                 })
                 .flatMap(updatedUser -> {
-                    // 异步发送 Kafka 消息
+                    // Asynchronously send Kafka message
                     UserEvent event = UserEvent.update(
                             updatedUser.getId(),
                             updatedUser.getName(),
@@ -72,7 +72,7 @@ public class UserService {
     public Mono<Void> deleteUser(Long id) {
         return userRepository.deleteById(id)
                 .then(Mono.defer(() -> {
-                    // 异步发送 Kafka 消息
+                    // Asynchronously send Kafka message
                     UserEvent event = UserEvent.delete(id);
                     return kafkaProducer.sendUserEvent(event)
                             .doOnError(e -> log.error("Failed to send DELETE event to Kafka", e))
